@@ -1,0 +1,56 @@
+#!/bin/bash
+
+function bash_prompt_command() {
+    # How many characters of the $PWD should be kept
+    local pwdmaxlen=25
+    # Indicate that there has been dir truncation
+    local trunc_symbol=".."
+    local dir=${PWD##*/}
+    pwdmaxlen=$(( ( pwdmaxlen < ${#dir} ) ? ${#dir} : pwdmaxlen ))
+    NEW_PWD=${PWD/#$HOME/\~}
+    local pwdoffset=$(( ${#NEW_PWD} - pwdmaxlen ))
+    if [ ${pwdoffset} -gt "0" ]
+    then
+        NEW_PWD=${NEW_PWD:$pwdoffset:$pwdmaxlen}
+        NEW_PWD=${trunc_symbol}/${NEW_PWD#*/}
+    fi
+}
+
+function duf {
+  du -sk "$@" | sort -n | \
+    while read size fname
+    do
+        for unit in k M G T P E Z Y
+        do
+          #echo $size
+          if [  `echo "scale=3; $size < 1024" | bc` == 1 ]; then
+            echo -e "`echo "scale=3;$size/1"|bc -l` ${unit}\t${fname}";
+            break;
+          fi
+          size=`echo "$size/1024" | bc -l` ;
+          #echo $size
+        done
+    done
+}
+
+if [[ $(uname) == "Darwin" ]]; then
+function setjdk() {
+  if [ $# -ne 0 ]; then
+   removeFromPath '/System/Library/Frameworks/JavaVM.framework/Home/bin'
+   if [ -n "${JAVA_HOME+x}" ]; then
+    removeFromPath $JAVA_HOME
+   fi
+   export JAVA_HOME=`/usr/libexec/java_home -v $@`
+   export PATH=$JAVA_HOME/bin:$PATH
+  fi
+}
+function removeFromPath() {
+  export PATH=$(echo $PATH | sed -E -e "s;:$1;;" -e "s;$1:?;;")
+}
+function clear_openwith {
+  /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/\
+  LaunchServices.framework/Versions/A/Support/\
+  ls register -kill -r -domain local -domain user
+}
+
+fi

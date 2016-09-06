@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+#Linux Android Enviroment
+# Java Hot Swap for manual /opt install 
+function set-java-env  {
+local RUN_SILENT=1
+  case  "$1" in
+     '6')setup-java6 ;;
+     '7')setup-java7 ;;
+     '8')setup-java8 ;;
+     *)setup-java7;;
+  esac
+
+  export PATH=${JAVA_HOME}/bin:${HOME_PATH_EXT}:${SYSTEM_BASE_PATH}:${ANDROID_PATH_EXT}
+}
+
+function setup-java6 {
+  export JAVA_HOME=/opt/java/jdk1.6.0_45-i586
+  export JDK_HOME=/opt/java/jdk1.6.0_45-i586
+}
+
+function setup-java7  {
+  export JAVA_HOME=/opt/java/jdk1.7.0_80-i586
+  export JDK_HOME=/opt/java/jdk1.7.0_80-i586
+}
+function setup-java8  {
+  export JAVA_HOME=/opt/java/jdk1.8.0_72-i586
+  export JDK_HOME=/opt/java/jdk1.8.0_72-i586
+}
+
+set-java-env

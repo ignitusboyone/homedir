@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+#Linux Android Enviroment
+# GCC 4.8  
+# Android 19
+# Support for additional Android api levels will require some  work
+function set-android-env  {
+local RUN_SILENT=1
+  case  "$1" in
+     '4.6')setup-android-gcc4.6 "$2";;
+     '4.8')setup-android-gcc4.8 "$2";;
+     *)setup-android-gcc4.8 "$2";;
+  esac
+
+  export PATH=${JAVA_HOME}/bin:${HOME_PATH_EXT}:${SYSTEM_BASE_PATH}:${ANDROID_PATH_EXT}
+  export LIBRARY_PATH=${HOME_LIB_EXT}:${ANDROID_PATH_EXT}
+}
+
+function setup-android-gcc4.6 {
+  local ANDROID_API_LEVEL=${1:-'19'}
+  if [ -z "$RUN_SILENT" ] ; then
+    echo "Setting up Android-${ANDROID_API_LEVEL} gcc 4.6"
+  fi
+  export ANDROID_HOME=/opt/android/sdk/
+  export NDK_PLATFORM="android-${ANDROID_API_LEVEL}-gcc4.6"
+  export STANDALONE_SDK_TOOLCHAIN="/opt/android/${NDK_PLATFORM}"
+  export PLATFORM_PREFIX="${STANDALONE_TOOL_CHAIN}/sysroot"
+
+  export ANDROID_NDK=/opt/android/android-ndk-r10d
+  export NDK_PATH=${ANDROID_NDK}
+ 
+  export GRADLE_EXECUTABLE=/opt/android/gradle-2.3/bin/gradle 
+  export ANDROID_PATH_EXT=${ANDROID_HOME}/platform-tools:/opt/android/gradle-2.3/bin
+  export ANDROID_LIB_EXT=${PLATFORM_PREFIX}/lib:${PLATFORM_PREFIX}/arm-linux-androideabi/lib
+}
+
+function setup-android-gcc4.8  {
+  local ANDROID_API_LEVEL=${1:-'19'}
+  
+  if [ -z "$RUN_SILENT" ] ; then
+    echo "Setting up Android-${ANDROID_API_LEVEL} gcc 4.8"
+  fi
+  
+  export ANDROID_HOME=/opt/android/sdk/
+  export NDK_PLATFORM="android-${ANDROID_API_LEVEL}"
+  export STANDALONE_SDK_TOOLCHAIN="/opt/android/${NDK_PLATFORM}"
+  export PLATFORM_PREFIX="${STANDALONE_TOOL_CHAIN}/sysroot"
+
+  export ANDROID_NDK=/opt/android/android-ndk-r10d
+  export NDK_PATH=${ANDROID_NDK}
+  
+  export GRADLE_EXECUTABLE=/opt/android/gradle-2.3/bin/gradle 
+  export ANDROID_PATH_EXT=${ANDROID_HOME}/platform-tools:/opt/android/gradle-2.3/bin
+  export ANDROID_LIB_EXT=${PLATFORM_PREFIX}/lib:${PLATFORM_PREFIX}/arm-linux-androideabi/lib
+}
+
+set-android-env

@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+alias vi="vim"
+alias glg="git lg | tac | sed -e 's/\\\\/\\!SLASH\\!/g' -e 's/\\//\\\\/g' -e 's/\\!SLASH\\!/\\//g'"
+
+if [ "$(uname)" == "Linux" ]; then
+  alias ls='ls -l --color'
+else
+  alias ls="ls -G"
+fi
+
